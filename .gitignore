@@ -1,0 +1,10 @@
+/.idea/
+/.settings/
+/TestData/
+/.classpath
+/.project
+/debug.log
+/pom.xml
+/testng.xml
+/target/
+/TestResults/

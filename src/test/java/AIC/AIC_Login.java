@@ -5,6 +5,12 @@ import com.relevantcodes.extentreports.ExtentTest;
 import org.openqa.selenium.WebDriver;
 import utility.WebDr;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class AIC_Login extends WebDr {
 
 	public AIC_Login(WebDriver wdriver, ExtentTest test) {
@@ -15,14 +21,17 @@ public class AIC_Login extends WebDr {
 	public boolean fn_Portal_Login() throws Exception  //String URL,String sAcntNum,String sLandingPage
 	{
 		AIC_Login_POM.SetPage_AOL_LOGIN();
-		String sUserName = "test005"; //getValue("User_Name");
-    	String sPassWord = "test005"; //getValue("Password");
+		String sUserName = "ABMNAET"; //getValue("User_Name");
+    	String sPassWord = "0738576880@Blue"; //getValue("Password");
     	boolean boolPortalLogin = false;
 
 		try
 		{
+
+
 			setText("txtUsername", sUserName, "Login Page - Enter Username");
 			setText("txtPassword", sPassWord, "Login Page - Enter Password");
+
 			click("btnSignIn", "Login Page - Click Login Button");
 			Thread.sleep(5000);
 
@@ -43,6 +52,7 @@ public class AIC_Login extends WebDr {
 		return boolPortalLogin;
 	}
 
+	/*
 	public boolean fn_Salesforce_Login() throws Exception  //String URL,String sAcntNum,String sLandingPage
 	{
 		AIC_Login_POM.SetPage_AOL_LOGIN();
@@ -72,5 +82,5 @@ public class AIC_Login extends WebDr {
 		}
 
 		return boolPortalLogin;
-	}
+	}*/
 }
