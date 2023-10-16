@@ -21,32 +21,28 @@ public class AIC_All_Risk extends WebDr {
         String sAddress = "Insured";
         //String sPostalCode = getValue("");
         String sDescription = getValue("AllRiskDescription");
-        //String sSumInsured = getValue("AllRiskSumInsured");
-        String sSumInsured = "8000";
-        String sCompulsoryExcess = "500";
+        String sSumInsured = getValue("AllRiskSumInsured");
+        String sAllRiskExcess = getValue("AllRiskExcess");
         String sNotes = "Test Notes";
 
         try
         {
             select("drDwnAddress","text",sAddress,"Select Address from Dropdown");
-            exists("lblPostalCode",true,"Verify postal code label");
-//            String sPCode = getText("lblPostalCode","Get postal code value from the screen");
+
+//           exists("lblPostalCode",true,"Verify postal code label");
+//           String sPCode = getText("lblPostalCode","Get postal code value from the screen");
 //           validateString(sPostalCode,sPCode,"Verify Postal Code Value");
             setText("txtDescription",sDescription,"Enter All Risk Description");
             Thread.sleep(2000);
             //wdriver.findElement(By.xpath("//label[contains(text(),'Sum Insured')]/ancestor::td/following-sibling::td//input")).sendKeys("5000");
             setText("txtSumInsured",sSumInsured,"Enter All Risk Sum Insured");
-            select("drDwnFlatExcess","text",sCompulsoryExcess,"Select All Risk Compulsory Excess");
+            select("drDwnFlatExcess","value",sAllRiskExcess,"Select All Risk Compulsory Excess");
             //setText("txtAreaNotes",sNotes,"Enter notes");
 
             //Click Save button
             click("btnSave", "Click Save button");
-            //new AIC_Common(wdriver,test).fn_needsSelectionAndFillUp();
 
             AllRiskDetails = true;
-
-//            Click back button after adding All Risk Details
-//            click("btnBack", "Click Back button");
 
         }
         catch (Exception e)

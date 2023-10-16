@@ -22,12 +22,11 @@ public class AIC_Login extends WebDr {
 	{
 		AIC_Login_POM.SetPage_AOL_LOGIN();
 		String sUserName = "ABMNAET"; //getValue("User_Name");
-    	String sPassWord = "0738576880@Blue"; //getValue("Password");
+    	String sPassWord = "Thandolwethu@2023"; //getValue("Password");
     	boolean boolPortalLogin = false;
 
 		try
 		{
-
 
 			setText("txtUsername", sUserName, "Login Page - Enter Username");
 			setText("txtPassword", sPassWord, "Login Page - Enter Password");

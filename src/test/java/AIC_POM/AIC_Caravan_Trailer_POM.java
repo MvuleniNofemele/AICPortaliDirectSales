@@ -45,11 +45,11 @@ public class AIC_Caravan_Trailer_POM {
         //My_Page_Objects.put ("txtCompulsoryExcess", "XPATH|//input[@id='templ:t_r_con:1:it5::content']");
 
         //History
-        My_Page_Objects.put ("chBxUninterruptedCaravanContentsInsurance ", "XPATH|//input[(@type='checkbox')]/ancestor::td/preceding-sibling::td/label[contains(text(),'36 months')]/ancestor::td/following-sibling::td/span/span/input"); //Have you had Uninterrupted Vehicle Insurance for the Past 36 Months?
+        My_Page_Objects.put ("chBxUninterruptedCaravanContentsInsurance", "XPATH|//input[(@type='checkbox')]/ancestor::td/preceding-sibling::td/label[contains(text(),'36 months')]/ancestor::td/following-sibling::td/span/span/input"); //Have you had Uninterrupted Vehicle Insurance for the Past 36 Months?
         My_Page_Objects.put ("txtNumberClaims12Months", "XPATH|//input[@type='text']/ancestor::td/preceding-sibling::td/label[contains(text(),'Past 12')]/ancestor::td/following-sibling::td/input"); //Number of Claims/Losses/Damages in the Past 12 Months
         My_Page_Objects.put ("txtNumberClaims24Months", "XPATH|//input[@type='text']/ancestor::td/preceding-sibling::td/label[contains(text(),'Past 13')]/ancestor::td/following-sibling::td/input"); //Number of Claims/Losses/Damages in the Past 13 to 24 Months
         My_Page_Objects.put ("txtNumberClaims36Months", "XPATH|//input[@type='text']/ancestor::td/preceding-sibling::td/label[contains(text(),'Past 25')]/ancestor::td/following-sibling::td/input"); //Number of Claims/Losses/Damages in the Past 25 to 36 Months
-        My_Page_Objects.put("ctSaveBtn","XPATH|//div[@id='templ:t_r_con:1:save_button']");//save button on Caravan/Trailer
+        My_Page_Objects.put("ctSaveBtn","XPATH|//a[contains(.,'Save')]");//save button on Caravan/Trailer
 
         WebDr.page_Objects = My_Page_Objects;
     }

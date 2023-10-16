@@ -1,0 +1,434 @@
+package testCases;
+
+import AOL_BAU.AOL_Life;
+import AOL_BAU.AOL_Login;
+import AOL_Common.Common_Function;
+import AOL_BAU.*;
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import utility.Constant;
+import utility.WebDr;
+
+public class testFlow extends WebDr {
+
+    public Boolean boolLifeServices=false;
+    public Boolean boolASTIServices= false;
+    public testFlow(ExtentTest test, ExtentReports extent) {
+        this.test = test;
+        this.extent = extent;
+    }
+
+    public void executeTC(String fn_name,String preferBrowser) throws Exception
+    {
+        try {
+            switch (fn_name) {
+                //'Life Apply
+                case "AOL_BAU_Apply_Life" : AOL_BAU_Apply_Life(preferBrowser);break;
+                case "AOL_BAU_Apply_Life Smoke_Yes_HealthLoading_Yes" : AOL_BAU_Apply_Life(preferBrowser);break;
+                case "AOL_BAU_Apply_Life Smoke_No_HealthLoading_No" : AOL_BAU_Apply_Life(preferBrowser);break;
+                case "AOL_BAU_Apply_Life BMI Validation" : AOL_BAU_Apply_Life(preferBrowser);break;
+                case "AOL_BAU_Apply_Life HealthParticular Assistance Modal Validation" : AOL_BAU_Apply_Life(preferBrowser);break;
+                case "AOL_BAU_Apply_Life UserAgeValidation" : AOL_BAU_Apply_Life(preferBrowser);break;
+                //Life - Manage
+                case "AOL_BAU_Life ChangeCover": ChangeCover_Life(preferBrowser);break;
+                case "Life_Services": Life_Services(preferBrowser);break;
+                case "Life_PayArrears": Life_PayArrears(preferBrowser);break;
+                case "Life_Activate_Policy": Life_Activate_Policy(preferBrowser);break;
+//
+//                //'Funeral'
+                case "AOL_BAU_Apply_Funeral_OnlyMainMember" : AOL_BAU_Apply_Funeral(preferBrowser);break;
+                case "AOL_BAU_Apply_Funeral_WithSpouce" : AOL_BAU_Apply_Funeral(preferBrowser);break;
+                case "AOL_BAU_Apply_Funeral_AllFamilyMember" : AOL_BAU_Apply_Funeral(preferBrowser);break;
+                case "AOL_BAU_Funeral_Services_AddFamilyMember" : AOL_BAU_Funeral_Services_AddFamilyMember(preferBrowser);break; //TODO : Done
+//                //Funeral manage
+                case "AOL_BAU_Funeral_Services_ChangeCover" : AOL_BAU_Funeral_Services_ChangeCover(preferBrowser);break; //TODO
+                case "AOL_BAU_Funeral_Services_Beneficiary" : AOL_BAU_Funeral_Services_Beneficiary(preferBrowser);break; //TODO
+                case "AOL_BAU_Funeral_Services_RegisterClaims" : AOL_BAU_Funeral_Services_RegisterClaims(preferBrowser);break; //TODO: Done
+                case "AOL_BAU_Funeral_Services_ChangePayment" : AOL_BAU_Funeral_Services_ChangePayment(preferBrowser);break; //TODO
+                case "Funeral_PayArrears": Funeral_PayArrears(preferBrowser);break; //TODO
+                case "Funeral_Activate_Policy": Funeral_Activate_Policy(preferBrowser);break; //TODO
+                case "Funeral_Services": Funeral_Services(preferBrowser);break; //TODO
+//
+                //Household Apply
+                case "AOL_BAU_Apply_HouseholdConponent" :  AOL_BAU_Apply_HouseholdConponent(preferBrowser);break;
+                //Motor
+                case "AOL_BAU_Apply_MotorVehicle" :  AOL_BAU_Apply_MotorVehicle(preferBrowser);break;
+                //home owner Apply
+                case "AOL_BAU_Apply_Home Owner" :  AOL_BAU_Apply_HomeOwner(preferBrowser);break;
+//                //Affinity Manage
+//                case "Affinity_Beneficiary" : Affinity_Beneficiary(driver);break;
+                case "ASTI_Services": ASTI_Services(preferBrowser);break;
+
+                case "AOL_BAU_Apply_UltimateProtector" : AOL_BAU_Apply_UltimateProtector(preferBrowser);break;
+                default:break;
+            }
+        } catch (Exception e) {
+            wdriver.quit();
+
+        }
+    }
+
+    public void AOL_BAU_Apply_Life(String preferBrowser)throws Exception
+    {
+        String sBMIValiation = getValue("BMI_Validation");
+        String sHealthAssistanceValiation = getValue("Health_Asisstance_Validation");
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+        if (new AOL_Login (wdriver,test).Login ("Apply for an account"))
+        {
+            String strLifePolicyNmbr = new AOL_Life (wdriver,test).fn_LifeABSAOnline();
+            wdriver.close ();
+            if (sBMIValiation.equals("Yes") || sHealthAssistanceValiation.equals("Yes")){
+                return;
+            }
+            String sAllPolicyNum = strLifePolicyNmbr;
+            if (!(sAllPolicyNum.length()==0)){
+                openApplication(sURL, preferBrowser);
+                if (new AOL_Login (wdriver,test).Login ("Insure")){
+                    if (new Common_Function (wdriver,test).fn_SearchPolicy (sAllPolicyNum)){
+//                    if (Common_Function.fn_SearchPolicy(sAllPolicyNum, Driver.driver)){
+                        new AOL_Insure (wdriver, test).fn_VerifyPolicyDetails_Life ();
+                    }
+                }
+            }
+        }
+    }
+
+    public void ChangeCover_Life(String preferBrowser) throws Exception{
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+
+        openApplication(sURL, preferBrowser);
+        String sPolicyNumber = getValue("PolicyNumber");
+        if (new AOL_Login (wdriver,test).Login ("Insure")) {
+            Thread.sleep(8000);
+
+            new AOL_Insure(wdriver, test).fn_ChangeCover_Life();
+//                new AOL_Insure (wdriver, test).fn_ChangeCover_Life(driver);
+        }
+    }
+
+    public void Life_Services(String preferBrowser) throws Exception{
+        boolLifeServices = true;
+        String sPolicyNumber = getValue("PolicyNumber");
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+//                                                         System.out.println("Search Compelte");
+                new AOL_Insure(wdriver,test).fn_AddBeneficiary();
+                new AOL_Insure(wdriver,test).fn_ChangeBeneficiary();
+                new AOL_Insure(wdriver,test).fn_DeleteBeneficiary();
+                new AOL_Insure(wdriver,test).fn_ChangePayment();
+            }
+        }
+    }
+
+    public void Life_PayArrears(String preferBrowser) throws Exception
+    {
+        String sPolicyNumber = getValue("PolicyNumber");
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+                new AOL_Insure(wdriver,test).fn_PayArrears();
+            }
+        }
+    }
+
+    public void Life_Activate_Policy(String preferBrowser) throws Exception
+    {
+        String sPolicyNumber = getValue("PolicyNumber");
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+                new AOL_Insure(wdriver,test).fn_Reactivate();
+            }
+        }
+    }
+
+    public void AOL_BAU_Apply_Funeral(String preferBrowser)throws Exception
+    {
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+        if (new AOL_Login (wdriver,test).Login ("Apply for an account"))
+        {
+            String strFuneralPolicyNmbr = new AOL_Funeral (wdriver,test).fn_FuneralCover ();
+            wdriver.close();
+			if (!(strFuneralPolicyNmbr.length()==0)){
+                openApplication(sURL, preferBrowser);
+                if (new AOL_Login (wdriver,test).Login ("Insure"))
+					Thread.sleep(5000);
+                if (new Common_Function (wdriver,test).fn_SearchPolicy (strFuneralPolicyNmbr)){
+                    new AOL_Insure (wdriver, test).fn_VerifyPolicyDetails_Funeral();
+                }
+            }
+        }
+    }
+
+    public void AOL_BAU_Funeral_Services_AddFamilyMember(String preferBrowser) throws Exception{
+        String sPolicyNumber = getValue("PolicyNumber");
+        boolLifeServices = false;
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+//                                                         System.out.println("Search Compelte");
+                new AOL_Insure (wdriver, test).fn_AddFamilyMember_Funeral();
+            }
+        }
+    }
+
+    public  void AOL_BAU_Funeral_Services_Beneficiary(String preferBrowser) throws Exception{
+        String sPolicyNumber = getValue("PolicyNumber");
+        boolLifeServices = false;
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+//                                                         System.out.println("Search Compelte");
+//                new AOL_Insure (wdriver, test).fn_AddBeneficiary();
+                new AOL_Insure (wdriver, test).fn_ChangeBeneficiary();
+                new AOL_Insure (wdriver, test).fn_DeleteBeneficiary();
+                                                            /*new AOL_Insure (wdriver, test).fn_Claims(driver);
+                                                            new AOL_Insure (wdriver, test).fn_ChangePayment(driver);*/
+            }
+        }
+    }
+
+    public  void AOL_BAU_Funeral_Services_RegisterClaims(String preferBrowser) throws Exception{
+        String sPolicyNumber = getValue("PolicyNumber");
+        boolLifeServices = false;
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+//                                                         System.out.println("Search Compelte");
+                new AOL_Insure (wdriver, test).fn_Claims();
+            }
+        }
+    }
+
+    public  void AOL_BAU_Funeral_Services_ChangePayment(String preferBrowser) throws Exception{
+        String sPolicyNumber = getValue("PolicyNumber");
+        boolLifeServices = false;
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+//                                                         System.out.println("Search Compelte");
+                new AOL_Insure (wdriver, test).fn_ChangePayment();
+            }
+        }
+    }
+
+    public  void Funeral_PayArrears(String preferBrowser) throws Exception
+    {
+        String sPolicyNumber = getValue("PolicyNumber");
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+                new AOL_Insure (wdriver, test).fn_PayArrears();
+            }
+        }
+    }
+
+    public  void Funeral_Activate_Policy(String preferBrowser) throws Exception
+    {
+        String sPolicyNumber = getValue("PolicyNumber");
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+                new AOL_Insure (wdriver, test).fn_Reactivate();
+            }
+        }
+    }
+
+    public void Funeral_Services(String preferBrowser) throws Exception{
+        String sPolicyNumber = getValue("PolicyNumber");
+        boolLifeServices = false;
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+                System.out.println("Search Compelte");
+                new AOL_Insure (wdriver, test).fn_AddBeneficiary();
+                new AOL_Insure (wdriver, test).fn_ChangeBeneficiary();
+                new AOL_Insure (wdriver, test).fn_DeleteBeneficiary();
+                new AOL_Insure (wdriver, test).fn_Claims();
+                new AOL_Insure (wdriver, test).fn_ChangePayment();
+            }
+        }
+    }
+
+    public  void AOL_BAU_Funeral_Services_ChangeCover(String preferBrowser) throws Exception{
+        String sPolicyNumber = getValue("PolicyNumber");
+        boolLifeServices = false;
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+
+        if (new AOL_Login (wdriver,test).Login ("Insure"))
+        {
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+//                                                         System.out.println("Search Compelte");
+                new AOL_Insure (wdriver, test).fn_ChangeCover_Funeral();
+            }
+        }
+    }
+
+    public void AOL_BAU_Apply_MotorVehicle(String preferBrowser)throws Exception
+    {
+
+        Thread.sleep (5000);
+        try {
+            setExcelFile (Constant.Path_TestData + Driver.file_TestData, "Configuration");
+            String sURL = getCellData (5, 1);
+            openApplication (sURL, preferBrowser);
+            if ( new AOL_Login (wdriver, test).Login ("Apply for an account") ) {
+                String strMotorPolicyNmbr = new AOL_Motor (wdriver, test).fn_MotorVehcile ( );
+                wdriver.close ( );
+                if ( strMotorPolicyNmbr.equals ("") ) {
+                    return;
+                }
+                openApplication (sURL, preferBrowser);
+                if ( new AOL_Login (wdriver, test).Login ("Insure") ) {
+                    if ( new Common_Function (wdriver, test).fn_SearchPolicy (strMotorPolicyNmbr) ) {
+//                    new AOL_Insure (wdriver, test).fn_VerifyPolicyDetails_IDIRECT("Motor Vehicle",AOL_Home.sCnfrmCoverAmnt,AOL_Home.scnfrmMonthlyPremium);
+                    }
+                }
+            }
+        }catch(Exception e)
+        {
+            throw e;
+        }
+
+    }
+
+    public void AOL_BAU_Apply_HouseholdConponent(String preferBrowser)throws Exception
+    {
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+        if (new AOL_Login (wdriver,test).Login ("Apply for an account"))
+        {
+            String strHousePolicyNmbr = new AOL_Household(wdriver,test).fn_Household();
+            wdriver.close();
+
+            if (strHousePolicyNmbr.equals("")) { return; }
+            openApplication(sURL, preferBrowser);
+            if (new AOL_Login (wdriver,test).Login ("Insure")){
+                if (new Common_Function (wdriver,test).fn_SearchPolicy (strHousePolicyNmbr)){
+                    new AOL_Insure (wdriver,test).fn_VerifyPolicyDetails_IDIRECT ("Household Components",new AOL_Household (wdriver,test).sRsltCover, new AOL_Household (wdriver,test).sRsltPremium );
+                }
+            }
+        }
+    }
+
+    public void AOL_BAU_Apply_HomeOwner(String preferBrowser)throws Exception
+    {
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+        if (new AOL_Login (wdriver,test).Login ("Apply for an account"))
+        {
+            String strHomePolicyNmbr = new AOL_Home(wdriver,test).fn_HomeBuilding();
+//            String strHomePolicyNmbr = AOL_Home.fn_HomeBuilding(driver);
+            wdriver.close();
+            if (!(strHomePolicyNmbr.length()==0)){
+                openApplication(sURL, preferBrowser);
+                if (new AOL_Login (wdriver,test).Login ("Insure")){
+                    if (new Common_Function (wdriver,test).fn_SearchPolicy (strHomePolicyNmbr)){
+                        new AOL_Insure (wdriver,test).fn_VerifyPolicyDetails_IDIRECT ("Household Components",new AOL_Home (wdriver,test).sCnfrmCoverAmnt, new AOL_Home (wdriver,test).scnfrmMonthlyPremium );
+                    }
+                }
+            }
+        }
+    }
+
+    public void ASTI_Services(String preferBrowser) throws Exception{
+        boolASTIServices = true;
+        setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+        String sURL=getCellData(5,1);
+        openApplication(sURL, preferBrowser);
+        if (new AOL_Login (wdriver,test).Login ("Apply for an account"))
+        {
+            String sPolicyNumber = getValue("PolicyNumber");
+            if (new Common_Function (wdriver,test).fn_SearchPolicy (sPolicyNumber)){
+                new AOL_Insure (wdriver, test).fn_ChangeCover_ASTI_HomeBuilding();
+                new AOL_Insure (wdriver, test).fn_ChangeCover_ASTI_MotorVehicle();
+                new AOL_Insure (wdriver, test).fn_ChangeCover_ASTI_HouseOwner();
+                new AOL_Insure (wdriver, test).fn_ASTI_Claim();
+                new AOL_Insure (wdriver, test).fn_ChangePayment_ASTI();
+            }
+        }
+    }
+    
+    
+    public void AOL_BAU_Apply_UltimateProtector(String preferBrowser) throws Exception
+    {
+        try{
+            setExcelFile(Constant.Path_TestData + Driver.file_TestData,"Configuration");
+            String sURL=getCellData(5,1);
+            openApplication(sURL, preferBrowser);
+            if (new AOL_Login (wdriver,test).Login ("Apply for an account")) {
+                String strUPPolicyNmbr = new AOL_UltimateProtector (wdriver, test).fn_UltimateProtector ( );
+                wdriver.close();
+//                String strUPPolicyNmbr = "6440803387";
+                if (strUPPolicyNmbr.equals("")) { return; }
+                openApplication(sURL, preferBrowser);
+                if (new AOL_Login (wdriver,test).Login ("Insure")) {
+                    if ( new Common_Function (wdriver, test).fn_SearchPolicy (strUPPolicyNmbr) ) {
+                        new AOL_Insure (wdriver, test).fn_Verify_UP ();
+                        String sdrpdwnPayTo = getValue ("PayTo");
+                        boolean blnAddBene = false;
+                        if (sdrpdwnPayTo.equals ("Beneficiary")){blnAddBene  =true; }
+                        new AOL_Insure (wdriver, test).fn_Verify_BeneficiaryDetails (blnAddBene);
+                        new AOL_Insure (wdriver, test).fn_Verify_PaymentDetails ();
+                    }
+                }
+            }
+        }
+        catch(Exception e){
+
+        }
+
+    }
+
+
+}
