@@ -29,6 +29,7 @@ public class AIC_Common extends WebDr {
         this.test = test;
     }
     /*Comment to be pushed to git*/
+    /*second comment*/
 
     public boolean fn_selectCampaign()
     {
